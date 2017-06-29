@@ -41,11 +41,23 @@ export default class Client {
     });
   }
 
-  getLocalTimeLine = (sinceID = 0, limit = 40) => this.mastodon.get('timelines/public', { local: '', since_id: sinceID, limit });
+  getLocalTimeLine = (maxID = undefined, limit = 40) => {
+    const opt = { local: '', limit };
+    if (maxID != null) opt.max_id = maxID;
+    return this.mastodon.get('timelines/public', opt);
+  };
 
-  getHomeTimeLine = (sinceID = 0, limit = 40) => this.mastodon.get('timelines/home', { home: '', since_id: sinceID, limit });
+  getHomeTimeLine = (maxID = undefined, limit = 40) => {
+    const opt = { home: '', limit };
+    if (maxID != null) opt.max_id = maxID;
+    return this.mastodon.get('timelines/home', opt);
+  }
 
-  getNotifications = (sinceID = 0, limit = 40) => this.mastodon.get('notifications', { since_id: sinceID, limit });
+  getNotifications = (maxID = undefined, limit = 40) => {
+    const opt = { limit };
+    if (maxID != null) opt.max_id = maxID;
+    return this.mastodon.get('notifications', opt);
+  }
 
   getMyAccount = () => this.mastodon.get('accounts/verify_credentials');
 

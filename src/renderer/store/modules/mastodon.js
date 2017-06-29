@@ -4,6 +4,8 @@ const state = {
   myAccount: {},
   toots: [],
   notifications: [],
+  isFetchingPrevToots: false,
+  canDecreaseToots: false,
 };
 
 function searchByUri(toots, uri) {
@@ -24,7 +26,12 @@ const mutations = {
   [MASTODON.ADD_TOOTS](state, payload) {
     const index = searchByid(state.toots, payload.id);
     if (index < 0) state.toots.unshift(payload);
-    if (state.toots.length > 40) state.toots.pop();
+    const length = state.toots.length;
+    if (state.isFetchingPrevToots
+        && state.canDecreaseToots
+        && length > 80) {
+      state.toots.splice(79, length - 80);
+    }
   },
   [MASTODON.DELETE_TOOTS](state, key) {
     const index = searchByid(state.toots, key);
@@ -48,6 +55,16 @@ const mutations = {
     state.myAccount = {};
     state.toot = [];
     state.notifications = [];
+  },
+  [MASTODON.FETCHING_PREV_TOOTS](state) {
+    state.isFetchingPrevToots = true;
+  },
+  [MASTODON.SET_PREV_TOOTS](state, data) {
+    Array.prototype.push.apply(state.toots, data);
+    state.isFetchingPrevToots = false;
+  },
+  [MASTODON.SET_CAN_DECREASE_TOOTS](state, flag) {
+    state.canDecreaseToots = flag;
   },
 };
 

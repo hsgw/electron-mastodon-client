@@ -28,8 +28,8 @@
       <media-attachments :attachments="toot.media_attachments" :sensitive="(toot.sensitive !== true)"></media-attachments>
       <div class="status_action">
         <div @click="reply"><icon class="icon reply" name="reply" scale="0.9"></icon></div>
-        <div @click="boost(toot.id, toot.uri, !toot.reblogged)"><icon class="icon boost" :class="{on:toot.reblogged}" name="retweet" scale="0.9"></icon></div>
-        <div @click="favorite(toot.id, toot.uri, !toot.favourited)"><icon class="icon fav" :class="{on:toot.favourited}" name="star" scale="0.9"></icon></div>
+        <div @click="boost(toot.id, toot.uri, !toot.reblogged)"><icon class="icon boost" :class="{on:toot.reblogged, off:isSendingBoost}" name="retweet" scale="0.9"></icon></div>
+        <div @click="favorite(toot.id, toot.uri, !toot.favourited)"><icon class="icon fav" :class="{on:toot.favourited, off:isSendingFav}" name="star" scale="0.9"></icon></div>
         <div v-if="isMyToot" @click="deleteToot(toot.id)"><icon class="icon del"  name="trash" scale="0.9"></icon></div>
         <!--<div><icon class="icon bar" name="bars"></icon></div>-->
       </div>
@@ -52,6 +52,8 @@ export default {
     return {
       hasSpoiler: false,
       isOpened: true,
+      isSendingFav: false,
+      isSendingBoost: false,
     };
   },
   computed: {
@@ -105,10 +107,22 @@ export default {
       this.$store.dispatch('reply', this.toot);
     },
     favorite(id, uri, flag) {
-      this.$store.dispatch('favorite', { id, uri, flag });
+      if (!this.isSendingFav) {
+        this.isSendingFav = true;
+        this.$store.dispatch('favorite', { id, uri, flag })
+        .then(() => {
+          this.isSendingFav = false;
+        });
+      }
     },
     boost(id, uri, flag) {
-      this.$store.dispatch('boost', { id, uri, flag });
+      if (!this.isSendingBoost) {
+        this.isSendingBoost = true;
+        this.$store.dispatch('boost', { id, uri, flag })
+        .then(() => {
+          this.isSendingBoost = false;
+        });
+      }
     },
     deleteToot(id) {
       this.$store.dispatch('deleteToot', id);
@@ -241,6 +255,10 @@ export default {
     div {
       cursor: pointer;
       .icon {
+        &.off {
+          cursor:  not-allowed;
+          color:$hidden-color;
+        }
         &.fav.on {
           color:$fav-color;
         }

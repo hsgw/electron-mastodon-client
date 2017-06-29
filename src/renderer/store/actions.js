@@ -57,23 +57,10 @@ export const requestAccessToken = ({ state, commit, dispatch }, authCode) => {
   });
 };
 
-export const getStatus = ({ commit }) => {
-  let toots = [];
-  return client.getLocalTimeLine()
+const fetchAllStatuses = maxID =>
+  Promise.all([client.getLocalTimeLine(maxID), client.getHomeTimeLine(maxID)])
   .then((resp) => {
-    const temp = resp.data;
-    temp.forEach((v) => {
-      v.statusFrom = 'local';
-    });
-    toots = toots.concat(temp);
-    return client.getHomeTimeLine();
-  })
-  .then((resp) => {
-    const temp = resp.data;
-    temp.forEach((v) => {
-      v.statusFrom = 'home';
-    });
-    toots = toots.concat(temp);
+    const toots = resp[0].data.concat(resp[1].data);
     toots.sort((a, b) => {
       if (a.id > b.id) return -1;
       if (a.id < b.id) return 1;
@@ -82,8 +69,24 @@ export const getStatus = ({ commit }) => {
     for (let i = 1; i < toots.length; i += 1) {
       if (toots[i].id === toots[i - 1].id) toots.splice(i, 1);
     }
-    commit(types.MASTODON.RESET_TOOTS, toots);
-    Promise.resolve();
+    return Promise.resolve(toots);
+  });
+
+export const refreshAllStatuses = ({ commit }) =>
+   fetchAllStatuses()
+   .then((resp) => {
+     commit(types.MASTODON.RESET_TOOTS, resp);
+     Promise.resolve();
+   });
+
+export const fetchPrevStatuses = ({ state, commit }) => {
+  if (state.mastodon.isFetchingPrevToots) return Promise.resolve();
+  commit(types.MASTODON.FETCHING_PREV_TOOTS);
+  const maxID = state.mastodon.toots[state.mastodon.toots.length - 1].id;
+  return fetchAllStatuses(maxID)
+  .then((res) => {
+    commit(types.MASTODON.SET_PREV_TOOTS, res);
+    return Promise.resolve();
   });
 };
 
@@ -105,7 +108,7 @@ export const login = ({ commit, state, dispatch }) => { // eslint-disable-line
 
   return client.setupStream()
   .then(() => dispatch('getMyAccount'))
-  .then(() => dispatch('getStatus'))
+  .then(() => dispatch('refreshAllStatuses'))
   .then(() => dispatch('getNotifications'))
   .then(() => {
     client.startLocalStream(
@@ -225,14 +228,15 @@ export const clearReply = ({ commit }) => {
   commit(types.COMPOSE.CLEAR_REPLY);
 };
 
-export const favorite = ({ commit }, { id, uri, flag = true }) => {
-  // console.log(`fav: ${id}, ${uri}, ${flag}`);
-  client.favorite(id, flag);
+export const favorite = ({ commit }, { id, uri, flag = true }) => client.favorite(id, flag)
+.then(() => {
   commit(types.MASTODON.SET_FAVORITE, { uri, flag });
-};
+  return Promise.resolve();
+});
 
-export const boost = ({ commit }, { id, uri, flag = true }) => {
-  // console.log(`fav: ${id}, ${uri}, ${flag}`);
-  client.boost(id, flag);
+export const boost = ({ commit }, { id, uri, flag = true }) =>
+client.boost(id, flag)
+.then(() => {
   commit(types.MASTODON.SET_BOOST, { uri, flag });
-};
+  return Promise.resolve();
+});

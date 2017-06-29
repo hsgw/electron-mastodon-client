@@ -63,9 +63,9 @@ export default {
       this.$store.dispatch('logout');
     },
     refresh() {
+      if (this.isRefreshing) return;
       this.isRefreshing = true;
-      this.$store.dispatch('getStatus')
-      .then(() => this.$store.dispatch('getNotifications'))
+      Promise.all([this.$store.dispatch('refreshAllStatuses'), this.$store.dispatch('getNotifications'), this.$store.dispatch('getMyAccount')])
       .then(() => {
         this.isRefreshing = false;
       });

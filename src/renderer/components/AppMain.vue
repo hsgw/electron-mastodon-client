@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="main-content">
-    <VuePerfectScrollbar class="timeline" v-once :settings="settings">
+    <VuePerfectScrollbar class="timeline" v-once :settings="settings" @ps-scroll-y="scrollTimelne" @ps-y-reach-end="fetchPrevStatuses">
       <timeline></timeline>
     </VuePerfectScrollbar>
   </div>
@@ -41,6 +41,14 @@ export default {
         suppressScrollX: true,
       },
     };
+  },
+  methods: {
+    scrollTimelne(e) {
+      this.$store.commit('SET_CAN_DECREASE_TOOTS', e.target.scrollTop === 0);
+    },
+    fetchPrevStatuses() {
+      this.$store.dispatch('fetchPrevStatuses');
+    },
   },
   created() {
     if (!this.$store.state.mastodon.toots.length) {
