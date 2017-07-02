@@ -17,6 +17,13 @@ require('electron-context-menu')({
     copyLink: 'リンクをコピー',
     inspect: '検証',
   },
+  prepend: params => [{
+    label: 'googleで検索',
+    click: () => {
+      shell.openExternal(`https://google.com/search?q=${params.selectionText}`);
+    },
+    visible: params.selectionText !== '',
+  }],
 });
 
 let mainWindow;
@@ -29,9 +36,9 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 600,
     useContentSize: true,
-    width: 1000,
+    width: 560,
   });
 
   mainWindow.loadURL(winURL);

@@ -1,9 +1,14 @@
 <template>
   <div class="menubar">
-    <!--<div class="icon"><icon name="gear" scale="1"></icon></div>-->
-    <dropdown-menu class="icon">
+    <!--<dropdown-menu class="menu_item">
+      <icon slot="button" name="gear"></icon>
+      <div slot="menu" class="dropdown status">
+        test
+      </div>
+    </dropdown-menu>-->
+    <dropdown-menu class="menu_item">
       <icon slot="button" :name="getVisibilityIcon"></icon>
-      <div slot="menu" class="dropdown">
+      <div slot="menu" class="dropdown visiblity">
         <div class="item" @click="setDefaultVisiblity('public')">
           <icon class="icon" slot="button" name="globe"></icon>
           <div class="desc"><div>公開</div><div>公開TLに投稿する</div></div>
@@ -22,8 +27,8 @@
         </div>
       </div>
     </dropdown-menu>
-    <div @click="refresh" class="icon refresh" :class="{on: isRefreshing}"><icon name="refresh" scale="1"></icon></div>
-    <div class="icon" @click="logout"><icon name="sign-out" scale="1"></icon></div>
+    <div @click="refresh" class="menu_item refresh" :class="{on: isRefreshing}"><icon name="refresh" scale="1"></icon></div>
+    <div class="menu_item" @click="logout"><icon name="sign-out" scale="1"></icon></div>
   </div>
 </template>
 
@@ -86,7 +91,7 @@ export default {
     margin-bottom:10px;
     background-color: $content-bg-color;
     border-radius: 5px;
-    &>.icon {
+    &>.menu_item {
       flex: 1;
       cursor: pointer;
       padding: 0.5em 0 0.2em 0;
@@ -100,25 +105,31 @@ export default {
     .dropdown {
       z-index: 9999;
       position: absolute;
-      width: 180px;
       margin-top: 5px;
+      width: 180px;
       background-color: $content-bg-color;
       text-align: left;
-      .item {
-        padding:0.5em 5px;
-        display: flex;
-        &:hover, &.active {
-          background-color: $success-color;
-        }
+      &.status {
+        cursor: auto;
+      }
 
-        .icon {
-          margin: 0 10px;
-        }
-        .desc {
-          font-size: smaller;
-          :first-child {
-            font-size: small;
-            font-weight: bold;
+      &.visiblity {
+        .item {
+          padding:0.5em 5px;
+          display: flex;
+          &:hover, &.active {
+            background-color: $success-color;
+          }
+
+          .icon {
+            margin: 0 10px;
+          }
+          .desc {
+            font-size: smaller;
+            :first-child {
+              font-size: small;
+              font-weight: bold;
+            }
           }
         }
       }
