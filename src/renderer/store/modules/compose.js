@@ -21,7 +21,6 @@ const mutations = {
     state.isTootable = valid(state.status);
   },
   [COMPOSE.ADD_TEXTAREA](state, { word, pos = 0 }) {
-    console.log(pos);
     const before = state.status.substr(0, pos);
     const after = state.status.substr(pos, state.status.length);
     state.status = before + word + after;

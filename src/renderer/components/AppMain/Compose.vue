@@ -183,7 +183,6 @@ export default {
       this.isOpenPicker = false;
       this.$store.commit('ADD_TEXTAREA', { word: emoji.colons, pos: this.textAreaCursorPos });
       this.textAreaCursorPos += emoji.colons.length;
-      console.log(emoji.colons.length);
     },
     postToot() {
       this.$store.dispatch('postToot');

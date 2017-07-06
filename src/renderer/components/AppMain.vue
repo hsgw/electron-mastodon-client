@@ -51,7 +51,7 @@ export default {
     },
   },
   created() {
-    if (this.$store.state.mastodon.myAccount === {}) {
+    if (!this.$store.state.mastodon.myAccount.id) {
       router.push('/');
     }
   },
