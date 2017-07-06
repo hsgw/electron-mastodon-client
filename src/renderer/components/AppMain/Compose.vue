@@ -19,7 +19,16 @@
       <input v-model="spoiler_text"></input>
     </div>
     <div class="inputarea">
-      <textarea v-model="status" rows="4" v-autosize="status" @keydown="textareaKeydown" @paste="textareaPaste"></textarea>
+      <div class="text_container">
+        <div class="text">
+          <textarea v-model="status" rows="4" v-autosize="status" @keydown="textareaKeydown" @paste="textareaPaste" @blur="textareaBlur"></textarea>
+        </div>
+        <div class="picker_container">
+          <div @click="clickPickerIcon"><icon class="icon" name="smile-o"></icon></div>
+          <div @click="clickPickerIcon" v-show="isOpenPicker" class="picker_bg"></div>
+          <picker @click="pickEmoji" v-show="isOpenPicker" class="picker" set="emojione" :emojiSize="16" :perLine="9"></picker>
+        </div>
+      </div>
       <upload-media></upload-media>
     </div>
     <div class="control">
@@ -65,6 +74,7 @@ import { remote, clipboard } from 'electron'; // eslint-disable-line
 import fs from 'fs'; // eslint-disable-line
 import path from 'path'; // eslint-disable-line
 import { mapState } from 'vuex';
+import { Picker } from 'emoji-mart-vue';
 import UploadMedia from './UploadMedia.vue';
 import DropdownMenu from '../utils/DropdownMenu.vue';
 
@@ -72,10 +82,12 @@ export default {
   name: 'compose',
   data() {
     return {
+      isOpenPicker: false,
+      textAreaCursorPos: 0,
     };
   },
   components: {
-    UploadMedia, DropdownMenu,
+    UploadMedia, DropdownMenu, Picker,
   },
   computed: {
     status: {
@@ -159,6 +171,19 @@ export default {
           }
         }
       }
+    },
+    textareaBlur(e) {
+      this.textAreaCursorPos = e.target.selectionEnd;
+    },
+    clickPickerIcon(e) {
+      e.preventDefault();
+      this.isOpenPicker = !this.isOpenPicker;
+    },
+    pickEmoji(emoji) {
+      this.isOpenPicker = false;
+      this.$store.commit('ADD_TEXTAREA', { word: emoji.colons, pos: this.textAreaCursorPos });
+      this.textAreaCursorPos += emoji.colons.length;
+      console.log(emoji.colons.length);
     },
     postToot() {
       this.$store.dispatch('postToot');
@@ -256,10 +281,33 @@ export default {
     .inputarea {
       background-color: white;
       padding: 5px;
-      textarea {
-        resize: none;
-        overflow:hidden;
-        width: 200px;
+      .text_container {
+        display: flex;
+        .text{
+          textarea {
+            resize: none;
+            overflow:hidden;
+            width: 205px;
+          }
+        }
+        .picker_container{
+          .icon {
+            color: $hidden-color;
+            cursor: pointer;
+          }
+          .picker {
+            position: absolute;
+            z-index: 500;
+          }
+          .picker_bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 499;
+          }
+        }
       }
     }
     .control{

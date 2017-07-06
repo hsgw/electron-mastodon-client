@@ -57,8 +57,9 @@ export const requestAccessToken = ({ state, commit, dispatch }, authCode) => {
   });
 };
 
-const fetchAllStatuses = maxID =>
-  Promise.all([client.getLocalTimeLine(maxID), client.getHomeTimeLine(maxID)])
+const fetchAllStatuses = (maxID) => {
+  if (!client) return Promise.reject();
+  return Promise.all([client.getLocalTimeLine(maxID), client.getHomeTimeLine(maxID)])
   .then((resp) => {
     const toots = resp[0].data.concat(resp[1].data);
     toots.sort((a, b) => {
@@ -71,6 +72,7 @@ const fetchAllStatuses = maxID =>
     }
     return Promise.resolve(toots);
   });
+};
 
 export const refreshAllStatuses = ({ commit }) =>
    fetchAllStatuses()
@@ -82,7 +84,10 @@ export const refreshAllStatuses = ({ commit }) =>
 export const fetchPrevStatuses = ({ state, commit }) => {
   if (state.mastodon.isFetchingPrevToots) return Promise.resolve();
   commit(types.MASTODON.FETCHING_PREV_TOOTS);
-  const maxID = state.mastodon.toots[state.mastodon.toots.length - 1].id;
+  let maxID = null;
+  if (state.mastodon.toots.length > 0) {
+    maxID = state.mastodon.toots[state.mastodon.toots.length - 1].id;
+  }
   return fetchAllStatuses(maxID)
   .then((res) => {
     commit(types.MASTODON.SET_PREV_TOOTS, res);

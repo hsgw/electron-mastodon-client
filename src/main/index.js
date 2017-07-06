@@ -18,7 +18,7 @@ require('electron-context-menu')({
     inspect: '検証',
   },
   prepend: params => [{
-    label: 'googleで検索',
+    label: `Googleで「${params.selectionText}」を検索`,
     click: () => {
       shell.openExternal(`https://google.com/search?q=${params.selectionText}`);
     },

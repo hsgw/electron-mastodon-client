@@ -47,11 +47,11 @@ export default {
       this.$store.commit('SET_CAN_DECREASE_TOOTS', e.target.scrollTop === 0);
     },
     fetchPrevStatuses() {
-      this.$store.dispatch('fetchPrevStatuses');
+      if (this.$store.state.mastodon.toots.length) this.$store.dispatch('fetchPrevStatuses');
     },
   },
   created() {
-    if (!this.$store.state.mastodon.toots.length) {
+    if (this.$store.state.mastodon.myAccount === {}) {
       router.push('/');
     }
   },

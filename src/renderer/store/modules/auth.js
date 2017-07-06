@@ -2,6 +2,7 @@ import { AUTH } from '../mutation-types.js';
 
 const state = {
   appName: 'ひきこもり',
+  appUrl: 'https://github.com/hsgw/electron-mastodon-client',
   serverURL: '',
   clientID: '',
   clientSeclet: '',
