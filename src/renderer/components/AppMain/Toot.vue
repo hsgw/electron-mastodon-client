@@ -28,7 +28,7 @@
         <span v-emoji-render:spoiler="toot.spoiler_text"></span>
         <button @click="toggleSpoiler">...</button>
         </div>
-        <div v-show="isOpened" class="status" v-emoji-render:status="toot.content"></div>
+        <div v-show="isOpened" class="status" v-emoji-render:status="toot.content" v-custom-emoji-render:status="toot"></div>
         <media-attachments :attachments="toot.media_attachments" :sensitive="(toot.sensitive !== true)"></media-attachments>
         <div class="status_action">
           <div @click="reply"><icon class="icon reply" name="reply" scale="0.9"></icon></div>

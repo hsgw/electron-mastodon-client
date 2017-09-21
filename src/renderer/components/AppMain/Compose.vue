@@ -181,7 +181,7 @@ export default {
     },
     pickEmoji(emoji) {
       this.isOpenPicker = false;
-      this.$store.commit('ADD_TEXTAREA', { word: emoji.colons, pos: this.textAreaCursorPos });
+      this.$store.commit('ADD_TEXTAREA', { word: emoji.native, pos: this.textAreaCursorPos });
       this.textAreaCursorPos += emoji.colons.length;
     },
     postToot() {
