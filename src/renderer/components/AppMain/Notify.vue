@@ -5,7 +5,7 @@
         <div class="header">
           <icon v-if="notify.type === 'reblog'" class="icon reblog" name="retweet"></icon>
           <icon v-if="notify.type === 'favourite'" class="icon fav" name="star"></icon>
-          <a :href="notify.account.url" target="_blank">@{{ notify.account.acct }}</a>
+          <a :href="notify.account.url" target="_blank"><span v-emoji-render:name="notify.account.display_name"></span> @{{ notify.account.acct }}</a>
         </div>
         <div v-html="notify.status.content" class="content">
         </div>
@@ -13,14 +13,14 @@
     </div>
     <div v-if="notify.type === 'mention'" class="mention">
       <div class="header">
-        <icon class="icon" name="share"></icon><a :href="notify.account.url" target="_blank"> @{{ notify.account.acct }} </a>
+        <icon class="icon" name="reply"></icon>
       </div>
       <toot :toot="notify.status"></toot>
     </div>
     <div v-if="notify.type === 'follow'" class="follow">
       <a :href="notify.account.url" target="_blank">
         <div><icon class="icon" name="user-plus"></icon> @{{notify.account.acct}}</div>
-        <div v-emoji-render:name="notify.account.display_name"></div>
+        <span v-emoji-render:name="notify.account.display_name"></span> followed you
       </a>
     </div>
     </div>
