@@ -26,7 +26,7 @@
         <div class="picker_container">
           <div @click="clickPickerIcon"><icon class="icon" name="smile-o"></icon></div>
           <div @click="clickPickerIcon" v-show="isOpenPicker" class="picker_bg"></div>
-          <picker @click="pickEmoji" v-show="isOpenPicker" class="picker" set="emojione" :emojiSize="16" :perLine="9"></picker>
+          <picker @click="pickEmoji" v-show="isOpenPicker" class="picker" set="twitter" :emojiSize="16" :perLine="9"></picker>
         </div>
       </div>
       <upload-media></upload-media>

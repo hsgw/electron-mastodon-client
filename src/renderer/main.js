@@ -7,12 +7,12 @@ import App from './App';
 import router from './router';
 import store from './store';
 
-import VueEmojiOne from './plugin/vue-emojione';
+import Emoji from './plugin/emoji';
 import CustomEmoji from './plugin/custom-emoji';
 
 Vue.component('icon', Icon);
 Vue.use(VueAutosize);
-Vue.use(VueEmojiOne);
+Vue.use(Emoji);
 Vue.use(CustomEmoji);
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));

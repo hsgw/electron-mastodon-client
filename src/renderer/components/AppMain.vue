@@ -60,7 +60,6 @@ export default {
 
 <style lang="scss">
 @import './_global';
-@import '/node_modules/emojione/assets/css/emojione.min.css';
 </style>
 
 <style lang="scss" scoped>

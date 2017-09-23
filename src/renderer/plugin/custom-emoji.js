@@ -8,7 +8,7 @@ export default {
           if (binding.value.emojis.length > 0) {
             binding.value.emojis.forEach((emoji) => {
               const regexp = new RegExp(`:${emoji.shortcode}:`, 'g');
-              const add = `<img class="emojione" alt=":${emoji.shortcode}:" title=":${emoji.shortcode}:" src="${emoji.url}">`;
+              const add = `<img class="emoji" alt=":${emoji.shortcode}:" title=":${emoji.shortcode}:" src="${emoji.url}">`;
               el.innerHTML = el.innerHTML.replace(regexp, add);
             }, this);
           }
